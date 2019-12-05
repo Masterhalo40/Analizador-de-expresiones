@@ -1,62 +1,30 @@
+import Expresion from './Expresion.js';
+import Nodo from './nodo.js';
 class Main{
     constructor(){
-        this._Actual = null;
-        document.querySelector('#btnCalcular').addEventListener('click', () => {
-            let simulacionCiclos = new SimulacionCiclos();
-            let contador = 0;
-            let contadorFinal = 0;
-            let numeroDeProcesos = 1;
-            let numeroDeProcesos2 = 0;
-            let ciclosRestantes = 0;
+        let view = new Expresion(document.querySelector('#postorder'), document.querySelector('#preorder')); document.querySelector('#calcular').addEventListener('click', () => {
 
-            for(let i=0;i<300;i++){
-                if(simulacionCiclos.Lanzar()<=39){
-                    this.nuevoProceso(new Ciclos('el proceso ' + numeroDeProcesos, Math.trunc(Math.random()*11)+4));
-                    console.log('Se ha agregado un proceso');
-                    numeroDeProcesos++;
-                }
-
-                if(this._Actual!==null){
-                    this._Actual.numeroCiclos -=1;
-                    
-                    if(this._Actual.numeroCiclos === 0){
-                        contadorFinal++;
-                        console.log('Se completo ' + this._Actual.nombre);
-                        this._Actual = this._Actual.siguiente;
+                let valores = new Array();
+                let expresion = document.querySelector('#expresion').value;
+                let resultado = document.querySelector('#resultado')
+                console.log(expresion);
+                
+                for(let i=0;i<expresion.length;i++){
+                    if(operacion[i]!='+' && expresion[i]!='-'&& expresion[i]!='/'&& expresion[i]!='*'){
+                        valores[i] = parseFloat(expresion[i])
+                    }else{
+                        valores[i] = expresion[i];
                     }
-                }else{
-                    contador++;
                 }
-            }
-
-            let faltantes = this._Actual;
-            while(faltantes!==null){
-                numeroDeProcesos2++;
-                ciclosRestantes+= this._Actual.numeroCiclos;
-                faltantes = faltantes.siguiente;
-            }
-
-            console.log('El total de procesos son: ' + contadorFinal);
-            console.log('La Cola estuvo vacía en el ciclo: ' + contador);
-            console.log('Total de ciclos faltantes: ' + ciclosRestantes);  
-            console.log('Procesos que no fueron finalizados: ' + numeroDeProcesos2);        
+                for(let i=0;i<valores.length;i++){
+                    
+                    let nodo = new Nodo(valores[i]);
+                    view.agregarNodo(nodo);
+                }
+                view.crearArbol();
+                view.preOrder();
+                view.posOrder();
         })
-    } 
-
-    nuevoProceso(proceso){
-        if(this._Actual===null){
-          this._Actual=proceso;
-        }else{
-              this._agregarproceso(proceso, this._Actual);
-        }       
-    }
-
-    _agregarproceso(nuevo, ultimo){
-          if(ultimo.siguiente===null){
-            ultimo.siguiente=nuevo;
-          }else{
-            this._agregarproceso(nuevo, ultimo.siguiente)
-          }
     }
 }
-let m = new Main();
+let main = new Main();
